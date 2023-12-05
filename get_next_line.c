@@ -6,43 +6,78 @@
 /*   By: jlu <jlu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 18:16:02 by jlu               #+#    #+#             */
-/*   Updated: 2023/12/01 15:33:58 by jlu              ###   ########.fr       */
+/*   Updated: 2023/12/05 19:04:23 by jlu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_read_line(int fd, char *static_buff)
+char	*create_remainder(char **str, char *nextline)
+{
+	char	*line;
+	char	*temp_buff;
+
+	line = NULL;
+	if (*str)
+	{
+		nextline = ft_strchr(*str, '\n');
+		if (nextline)
+		{
+			temp_buff = *str;
+			*str = ft_strdup(nextline + 1);
+			nextline = ft_memcpy(nextline, "\n\0", 2);
+			line = ft_strdup(temp_buff);
+			free(temp_buff);
+		}
+		else
+		{
+			line = *str;
+			*str = ((void *)0);
+		}
+	}
+	else
+		line = ft_strdup("");
+	return (line);
+}
+
+char	*read_line(int fd, char *line, char **static_buff, char *nextline)
 {
 	int		bytes;
-	char	*buffer;
+	char	buff[BUFFER_SIZE + 1];
+	char	*temp;
 
-	bytes = read(fd, buffer, BUFFER_SIZE);
-	if (bytes == -1)
-		return (NULL);
-
+	bytes = 1;
+	while (!nextline && bytes && line && !(*static_buff))
+	{
+		bytes = read(fd, buff, BUFFER_SIZE);
+		if (bytes <= 0 && *line == '\0')
+		{
+			free(line);
+			return (NULL);
+		}
+		buff[bytes] = '\0';
+		nextline = ft_strchr(buff, '\n');
+		if (nextline)
+		{
+			*static_buff = (ft_strdup(nextline + 1));
+			nextline = ft_memcpy(nextline, "\n\0", 2);
+		}
+		temp = line;
+		line = ft_strjoin(line, buff);
+		free(temp);
+	}
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
 	static char		*buff;
-	char			*next_line;
+	char			*line;
 
-	next_line = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
+	line = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buff)
-		return (NULL);
-	
+	line = create_remainder(&buff, ((void *)0));
+	line = read_line(fd, line, &buff, ((void *)0));
+	return (line);
 }
-
-/*
-	- Repeated calls (with loops) with get_next_line() func. It should read the text file
-	pointed to by the file descriptor, one line at a time;
-	- The function should return the line that was read;
-	- if nothing was to be read or an error occurred, it should return NULL;
-	- The function should work both in reading a file and when reading from the standard input;
-	- The returned line should be include the terminating \n character, EXCEPT if the end of file was reached and does not end with a \n character;
-	- all the helper functions should be in get_next_line_utils.c file;
-*/
