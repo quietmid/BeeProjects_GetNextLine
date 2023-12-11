@@ -6,7 +6,7 @@
 /*   By: jlu <jlu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 18:16:00 by jlu               #+#    #+#             */
-/*   Updated: 2023/12/08 20:48:30 by jlu              ###   ########.fr       */
+/*   Updated: 2023/12/11 14:04:22 by jlu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,18 +108,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	substr[i] = '\0';
 	return (substr);
 }
-
-//#include<stdio.h>
-
-//int	main(void)
-//{
-//	char	*line = "hello world";
-//	char	*buf = "omg omg omg";
-
-//	printf("%s\n", line);
-//	line = ft_strjoin(line, buf);
-//	printf("%s\n", line);
-//		line = ft_strjoin(line, buf);
-//	printf("%s\n", line);
-//	return 0;
-//}
