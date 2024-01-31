@@ -6,10 +6,10 @@ The goal of this project is to understand how files are opened, read and closed 
 For example, 
 the file descriptor:
 
-11111\n
-1111\n
-1111111\n
-111111\n
+11111\n  
+1111\n  
+1111111\n  
+111111\n  
 
 if I set my GNL to read 10 bytes at a time, it will read the first two lines right before the second \n character. Writes the first line out and then read 10 more bytes and then print the second line out.
 
